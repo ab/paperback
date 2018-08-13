@@ -1,0 +1,133 @@
+# Configuration parameters: EnforcedStyle, SupportedStyles.
+Style/StringLiterals:
+  Enabled: false
+
+Metrics/AbcSize:
+  Max: 50
+
+Metrics/ClassLength:
+  Enabled: false
+
+Metrics/BlockLength:
+  Enabled: false
+
+# Offense count: 4
+Metrics/CyclomaticComplexity:
+  Max: 15
+
+# Offense count: 12
+# Configuration parameters: CountComments.
+Metrics/MethodLength:
+  Max: 45
+
+# Configuration parameters: CountComments.
+Metrics/ModuleLength:
+  Enabled: false
+
+# Configuration parameters: Exclude.
+#
+# We could re-enable this if it understood that the top level module should
+# *not* be documented in files that are not the first to define it.
+#
+Style/Documentation:
+  Enabled: false
+  Exclude:
+    - 'spec/**/*'
+    - 'test/**/*'
+
+# ********************************
+# Disagree with these style points
+# ********************************
+
+Style/DotPosition:
+  Enabled: false
+Style/DoubleNegation:
+  Enabled: false
+Style/EmptyLines:
+  Enabled: false
+Style/EmptyLinesAroundClassBody:
+  Enabled: false
+Style/EmptyLinesAroundMethodBody:
+  Enabled: false
+Style/EmptyLinesAroundModuleBody:
+  Enabled: false
+Style/GuardClause:
+  Enabled: false
+
+# Don't favor modifier style ever.
+Style/IfUnlessModifier:
+  Enabled: false
+Style/WhileUntilModifier:
+  Enabled: false
+
+Style/InfiniteLoop:
+  Enabled: false
+Style/PercentLiteralDelimiters:
+  PreferredDelimiters:
+    '%w': '{}'
+    '%W': '{}'
+Style/RaiseArgs:
+  EnforcedStyle: compact
+Style/RedundantReturn:
+  Enabled: false
+Style/Alias:
+  Enabled: false
+Style/SignalException:
+  EnforcedStyle: only_raise
+Style/SpaceAroundEqualsInParameterDefault:
+  EnforcedStyle: no_space
+
+# Arguable
+# Configuration parameters: EnforcedStyle, SupportedStyles, EnforcedStyleForEmptyBraces, SpaceBeforeBlockParameters.
+Style/SpaceInsideBlockBraces:
+  Enabled: false
+
+# Arguable
+# Configuration parameters: EnforcedStyle, EnforcedStyleForEmptyBraces, SupportedStyles.
+Style/SpaceInsideHashLiteralBraces:
+  Enabled: false
+
+# Offense count: 27
+# Cop supports --auto-correct.
+# Configuration parameters: EnforcedStyleForMultiline, SupportedStyles.
+Style/TrailingCommaInLiteral:
+  # SupportedStyles:
+  #   - comma
+  #   - no_comma
+  EnforcedStyleForMultiline: comma
+
+# Don't favor %w for arrays of words.
+Style/WordArray:
+  Enabled: false
+
+# Don't favor %i for arrays of symbols.
+Style/SymbolArray:
+  Enabled: false
+
+# Definitely do NOT assign variables within a conditional. Christ.
+Style/ConditionalAssignment:
+  Enabled: false
+
+# I prefer a semantic style for block delimiters: always use {...} when the
+# block's return value is used, do...end otherwise.
+Style/BlockDelimiters:
+  EnforcedStyle: braces_for_chaining
+
+# ********************************
+
+# Configuration parameters: AllowedVariables.
+Style/GlobalVars:
+  Exclude:
+    - 'spec/spec_helper.rb'
+
+# I disagree with this cop for the specific case of
+#   if !foo.empty?
+# because I think it's a shame that ruby has no nonempty? predicate, and it's
+# clearer if the double negative is all on the RHS.
+#Style/NegatedIf:
+#  Exclude:
+#    - 'foo.rb'
+
+Style/SpecialGlobalVars:
+  Exclude:
+    - 'paperback.gemspec'
