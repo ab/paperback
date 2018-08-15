@@ -27,7 +27,8 @@ module Paperback; class Document
 
   # High level method to draw the paperback content on the pdf document
   def draw_paperback(qr_code:, sixword_lines:, sixword_bytes:,
-                     labels:, passphrase_sha: nil, passphrase_len: nil)
+                     labels:, passphrase_sha: nil, passphrase_len: nil,
+                     sixword_font_size: nil)
     unless qr_code.is_a?(RQRCode::QRCode)
       raise ArgumentError.new('qr_code must be RQRCode::QRCode')
     end
@@ -51,7 +52,8 @@ module Paperback; class Document
 
     pdf.start_new_page
 
-    draw_sixword(lines: sixword_lines, sixword_bytes: sixword_bytes)
+    draw_sixword(lines: sixword_lines, sixword_bytes: sixword_bytes,
+                 font_size: sixword_font_size)
 
     pdf.number_pages('<page> of <total>', align: :right,
                      at: [pdf.bounds.right - 100, -2])
@@ -114,7 +116,10 @@ module Paperback; class Document
   # @param [Integer] columns The number of text columns on the page
   # @param [Integer] hunks_per_row The number of 6-word sentences per line
   # @param [Integer] sixword_bytes Bytesize of the sixword encoded data
-  def draw_sixword(lines:, sixword_bytes:, columns: 3, hunks_per_row: 1)
+  def draw_sixword(lines:, sixword_bytes:, columns: 3, hunks_per_row: 1,
+                   font_size: nil)
+    font_size ||= 11
+
     debug_draw_axes
 
     numbered = lines.each_slice(hunks_per_row).each_with_index.map { |row, i|
@@ -134,7 +139,7 @@ module Paperback; class Document
 
     pdf.column_box([0, pdf.cursor], columns: columns, width: pdf.bounds.width) do
       pdf.font('Times-Roman') do
-        pdf.font_size(11) do
+        pdf.font_size(font_size) do
           pdf.text(numbered.join("\n"))
         end
       end

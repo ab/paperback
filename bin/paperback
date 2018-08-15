@@ -31,11 +31,11 @@ For example:
 Options:
     EOM
 
-    opts.on('-h', '--help', 'Display this message', ' ') do
+    opts.on('-h', '--help', 'Display this message') do
       STDERR.puts opts, ''
       exit 0
     end
-    opts.on('--version', 'Print version number', ' ') do
+    opts.on('--version', 'Print version number') do
       puts 'paperback ' + Paperback::VERSION
       exit 0
     end
@@ -45,17 +45,24 @@ Options:
 
     #
 
-    opts.on('--no-encrypt', 'Skip encryption of input') do |val|
-      options[:encrypt] = val
-    end
-
     opts.on('-c', '--comment TEXT', 'Add TEXT comment to output') do |val|
       options[:comment] = val
     end
 
-    opts.on('--passphrase-out FILE',
-            'Write generated passphrase to FILE') do |val|
+    opts.on('--no-encrypt', 'Skip encryption of input') do |val|
+      options[:encrypt] = val
+    end
+
+    opts.on('--passphrase-out FILE', 'Write generated passphrase to FILE',
+            ' ') do |val|
       options[:passphrase_file] = val
+    end
+
+    #
+
+    opts.on('--sixword-font-size SIZE', 'Size of sixword text') do |val|
+      options[:extra_draw_opts] ||= {}
+      options[:extra_draw_opts][:sixword_font_size] = Float(val)
     end
   end
 

@@ -63,7 +63,7 @@ module Paperback
       @log ||= Paperback.class_log(self)
     end
 
-    def render(output_filename:)
+    def render(output_filename:, extra_draw_opts: {})
       log.debug('Preparer#render')
 
       opts = {
@@ -84,6 +84,8 @@ module Paperback
           log.info("Wrote passphrase to #{passphrase_file.inspect}")
         end
       end
+
+      opts.merge!(extra_draw_opts)
 
       @document.render(output_file: output_filename, draw_opts: opts)
 
