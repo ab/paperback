@@ -14,14 +14,21 @@ module Paperback
   class Preparer
     attr_reader :data
     attr_reader :labels
-    attr_reader :base64_qr
+    attr_reader :qr_base64
     attr_reader :encrypt
+    attr_reader :passphrase_file
 
-    def initialize(filename:, encrypt: true, base64_qr: false, comment: 'This is a comment')
+    def initialize(filename:, encrypt: true, qr_base64: false, qr_level: nil,
+                   comment: nil, passphrase_file: nil)
+
       log.debug('Preparer#initialize')
 
-      log.info("Reading #{filename}")
+      log.info("Reading #{filename.inspect}")
       plain_data = File.read(filename)
+
+      log.debug("Read #{plain_data.bytesize} bytes")
+
+      @encrypt = encrypt
 
       if encrypt
         @data = self.class.gpg_encrypt(filename: filename, password: passphrase)
@@ -30,8 +37,10 @@ module Paperback
       end
       @sha256 = Digest::SHA256.hexdigest(plain_data)
 
-      @base64_qr = base64_qr
-      @encrypt = encrypt
+      @qr_base64 = qr_base64
+      @qr_level = qr_level
+
+      @passphrase_file = passphrase_file
 
       @labels = {}
       @labels['Filename'] = filename
@@ -40,7 +49,7 @@ module Paperback
       stat = File.stat(filename)
       @labels['Mtime'] = stat.mtime
       @labels['Bytes'] = plain_data.bytesize
-      @labels['Comment'] = comment
+      @labels['Comment'] = comment if comment
 
       @labels['SHA256'] = Digest::SHA256.hexdigest(plain_data)
 
@@ -55,23 +64,38 @@ module Paperback
     end
 
     def render(output_filename:)
+      log.debug('Preparer#render')
 
       opts = {
         labels: labels,
         qr_code: qr_code,
         sixword_lines: sixword_lines,
         sixword_bytes: data.bytesize,
-        passphrase_sha: self.class.truncated_sha256(passphrase),
       }
+
+      if encrypt
+        opts[:passphrase_sha] = self.class.truncated_sha256(passphrase)
+        opts[:passphrase_len] = passphrase.length
+        if passphrase_file
+          File.open(passphrase_file, File::CREAT|File::EXCL|File::WRONLY,
+                   0400) do |f|
+            f.write(passphrase)
+          end
+          log.info("Wrote passphrase to #{passphrase_file.inspect}")
+        end
+      end
 
       @document.render(output_file: output_filename, draw_opts: opts)
 
       log.info('Render complete')
 
-      puts "Passphrase: #{passphrase}"
+      if encrypt && !passphrase_file
+        puts "Passphrase: #{passphrase}"
+      end
     end
 
     def passphrase
+      raise "Can't have passphrase without encrypt" unless encrypt
       @passphrase ||= self.class.random_passphrase
     end
 
@@ -79,7 +103,7 @@ module Paperback
 
     def self.random_passphrase(entropy_bits: 256, char_set: PassChars)
       chars_needed = (entropy_bits / Math.log2(char_set.length)).ceil
-      (0..chars_needed).map {
+      (0...chars_needed).map {
         PassChars.fetch(SecureRandom.random_number(char_set.length))
       }.join
     end
@@ -104,6 +128,36 @@ module Paperback
       out
     end
 
+    def self.gpg_ascii_enarmor(data, strip_comments: true)
+      cmd = %w[gpg --batch --enarmor]
+      out = nil
+
+      log.debug('+ ' + cmd.join(' '))
+      Subprocess.check_call(cmd, stdin: Subprocess::PIPE,
+                            stdout: Subprocess::PIPE) do |p|
+        out, _err = p.communicate(data)
+      end
+
+      if strip_comments
+        out = out.each_line.select { |l| !l.start_with?('Comment: ') }.join
+      end
+
+      out
+    end
+
+    def self.gpg_ascii_dearmor(data)
+      cmd = %w[gpg --batch --dearmor]
+      out = nil
+
+      log.debug('+ ' + cmd.join(' '))
+      Subprocess.check_call(cmd, stdin: Subprocess::PIPE,
+                            stdout: Subprocess::PIPE) do |p|
+        out, _err = p.communicate(data)
+      end
+
+      out
+    end
+
     private
 
     def qr_code
@@ -112,11 +166,34 @@ module Paperback
 
     def qr_code!
       log.info('Generating QR code')
-      if base64_qr
-        RQRCode::QRCode.new(Base64.encode64(data))
+
+      # Base64 encode data prior to QR encoding as requested
+      if qr_base64
+        if encrypt
+          # If data is already GPG encrypted, use GPG's base64 armor
+          input = self.class.gpg_ascii_enarmor(data)
+        else
+          # Otherwise do plain Base64
+          input = Base64.encode64(data)
+        end
       else
-        RQRCode::QRCode.new(data)
+        input = data
       end
+
+      # If QR level not specified, pick highest level of redundancy possible
+      # given the size of the input, up to Q (25% redundancy)
+      unless @qr_level
+        if input.bytesize <= 1663
+          @qr_level = :q
+        elsif input.bytesize <= 2331
+          @qr_level = :m
+        else
+          @qr_level = :l
+        end
+      end
+
+      log.debug("qr_level: #{@qr_level.inspect}")
+      RQRCode::QRCode.new(input, level: @qr_level)
     end
 
     def sixword_lines

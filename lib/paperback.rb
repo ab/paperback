@@ -18,9 +18,7 @@ module Paperback
   end
 
   def self.log_level
-    return @log_level if @log_level
-
-    @log_level = Logger::INFO
+    @log_level ||= Logger::INFO
   end
 
   def self.log_level=(val)
@@ -29,5 +27,6 @@ module Paperback
 end
 
 require_relative 'paperback/version'
+require_relative 'paperback/cli'
 require_relative 'paperback/document'
 require_relative 'paperback/preparer'

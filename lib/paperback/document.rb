@@ -26,7 +26,8 @@ module Paperback; class Document
   end
 
   # High level method to draw the paperback content on the pdf document
-  def draw_paperback(qr_code:, sixword_lines:, sixword_bytes:, passphrase_sha:, labels:)
+  def draw_paperback(qr_code:, sixword_lines:, sixword_bytes:,
+                     labels:, passphrase_sha: nil, passphrase_len: nil)
     unless qr_code.is_a?(RQRCode::QRCode)
       raise ArgumentError.new('qr_code must be RQRCode::QRCode')
     end
@@ -36,7 +37,8 @@ module Paperback; class Document
 
     debug_draw_axes
 
-    draw_header(labels: labels, passphrase_sha: passphrase_sha)
+    draw_header(labels: labels, passphrase_sha: passphrase_sha,
+                passphrase_len: passphrase_len)
 
     add_newline
 
@@ -66,7 +68,8 @@ module Paperback; class Document
     pdf.move_down(pdf.font_size)
   end
 
-  def draw_header(labels:, passphrase_sha:, repo_url: 'https://github.com/ab/paperback')
+  def draw_header(labels:, passphrase_sha:, passphrase_len:,
+                  repo_url: 'https://github.com/ab/paperback')
 
     intro = [
       "This is a paper backup produced by `paperback`. ",
@@ -77,24 +80,33 @@ module Paperback; class Document
 
     label_pad = labels.keys.map(&:length).max + 1
 
+    unless passphrase_sha && passphrase_len
+      labels['Encrypted'] = 'no'
+    end
+
     pdf.font('Courier') do
       labels.each_pair do |k, v|
         pdf.text("#{(k + ':').ljust(label_pad)} #{v}")
       end
-      pdf.text("SHA256(passphrase)[0...16]: #{passphrase_sha}")
+
+      if passphrase_sha
+        pdf.text("SHA256(passphrase)[0...16]: #{passphrase_sha}")
+      end
     end
 
     add_newline
 
-    pdf.font('Helvetica') do
-      pdf.font_size(12.8) do
-        pdf.text('Passphrase: ' + '_ ' * 43)
+    if passphrase_len
+      pdf.font('Helvetica') do
+        pdf.font_size(12.8) do
+          pdf.text('Passphrase: ' + '_ ' * passphrase_len)
+        end
       end
-    end
 
-    pdf.move_down(8)
-    pdf.indent(72) do
-      pdf.text('Be sure to cover the passphrase when scanning the QR code!')
+      pdf.move_down(8)
+      pdf.indent(72) do
+        pdf.text('Be sure to cover the passphrase when scanning the QR code!')
+      end
     end
   end
 
