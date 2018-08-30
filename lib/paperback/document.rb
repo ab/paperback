@@ -107,7 +107,8 @@ module Paperback; class Document
 
       pdf.move_down(8)
       pdf.indent(72) do
-        pdf.text('Be sure to cover the passphrase when scanning the QR code!')
+        pdf.text('Be sure to cover the passphrase when scanning the QR code!' \
+                 ' Decrypt with `gpg -d`.')
       end
     end
   end
@@ -129,7 +130,7 @@ module Paperback; class Document
     header = [
       "This sixword text encodes #{sixword_bytes} bytes in #{lines.length}",
       " six-word sentences.",
-      " Decode with `sixword -d`"
+      " Decode with `sixword -d`, then `gpg -d`."
     ].join
 
     pdf.font('Times-Roman') do
@@ -170,7 +171,7 @@ module Paperback; class Document
             pdf.stroke_color(pixel_val ? '000000' : 'ffffff')
             pdf.fill_color(pixel_val ? '000000' : 'ffffff')
             xy = [(col_i + 1) * pixel_width, pdf.cursor]
-            pdf.fill_and_stroke_rectangle(xy, pixel_width, pixel_height)
+            pdf.fill_rectangle(xy, pixel_width, pixel_height)
           end
         end
       end

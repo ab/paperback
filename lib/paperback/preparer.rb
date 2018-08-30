@@ -91,8 +91,11 @@ module Paperback
 
       log.info('Render complete')
 
-      if encrypt && !passphrase_file
-        puts "Passphrase: #{passphrase}"
+      if encrypt
+        puts "SHA256(passphrase)[0...16]: " + opts.fetch(:passphrase_sha)
+        if !passphrase_file
+          puts "Passphrase: #{passphrase}"
+        end
       end
     end
 
