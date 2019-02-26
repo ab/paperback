@@ -19,7 +19,7 @@ module Paperback
     attr_reader :passphrase_file
 
     def initialize(filename:, encrypt: true, qr_base64: false, qr_level: nil,
-                   comment: nil, passphrase_file: nil)
+                   comment: nil, passphrase_file: nil, include_base64: true)
 
       log.debug('Preparer#initialize')
 
@@ -41,6 +41,8 @@ module Paperback
       @qr_level = qr_level
 
       @passphrase_file = passphrase_file
+
+      @include_base64 = !!include_base64
 
       @labels = {}
       @labels['Filename'] = filename
@@ -73,6 +75,11 @@ module Paperback
         sixword_bytes: data.bytesize,
       }
 
+      if include_base64?
+        opts[:base64_content] = base64_content
+        opts[:base64_bytes] = data.bytesize
+      end
+
       if encrypt
         opts[:passphrase_sha] = self.class.truncated_sha256(passphrase)
         opts[:passphrase_len] = passphrase.length
@@ -96,6 +103,8 @@ module Paperback
         if !passphrase_file
           puts "Passphrase: #{passphrase}"
         end
+      else
+        log.info('Content was not encrypted')
       end
     end
 
@@ -163,6 +172,13 @@ module Paperback
       out
     end
 
+    # Whether to add the Base64 encoding to the generated document.
+    #
+    # @return [Boolean]
+    def include_base64?
+      !!@include_base64
+    end
+
     private
 
     def qr_code
@@ -174,13 +190,7 @@ module Paperback
 
       # Base64 encode data prior to QR encoding as requested
       if qr_base64
-        if encrypt
-          # If data is already GPG encrypted, use GPG's base64 armor
-          input = self.class.gpg_ascii_enarmor(data)
-        else
-          # Otherwise do plain Base64
-          input = Base64.encode64(data)
-        end
+        input = base64_content
       else
         input = data
       end
@@ -207,5 +217,15 @@ module Paperback
         Sixword.pad_encode_to_sentences(data).map(&:downcase)
     end
 
+    def base64_content
+      log.debug('Encoding with Base64')
+      if encrypt
+        # If data is already GPG encrypted, use GPG's base64 armor
+        self.class.gpg_ascii_enarmor(data)
+      else
+        # Otherwise do plain Base64
+        Base64.encode64(data)
+      end
+    end
   end
 end

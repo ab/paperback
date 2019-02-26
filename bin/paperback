@@ -53,6 +53,10 @@ Options:
       options[:encrypt] = val
     end
 
+    opts.on('--no-base64', "Don't append plain Base64 paragraph") do |val|
+      options[:include_base64] = val
+    end
+
     opts.on('--passphrase-out FILE', 'Write generated passphrase to FILE',
             ' ') do |val|
       options[:passphrase_file] = val

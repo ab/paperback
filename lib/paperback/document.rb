@@ -26,9 +26,24 @@ module Paperback; class Document
   end
 
   # High level method to draw the paperback content on the pdf document
-  def draw_paperback(qr_code:, sixword_lines:, sixword_bytes:,
-                     labels:, passphrase_sha: nil, passphrase_len: nil,
-                     sixword_font_size: nil)
+  #
+  # @param qr_code
+  # @param sixword_lines
+  # @param sixword_bytes
+  # @param labels
+  # @param passphrase_sha
+  # @param [Integer, nil] passphrase_len Length of the passphrase used to
+  #   encrypt the original content. If this is not provided, then assume the
+  #   original content was not encrypted and skip adding gpg -d instructions.
+  # @param [Integer] sixword_font_size The font size to use for Sixword text
+  # @param [String,nil] base64_content If provided, then append the original
+  #   content (possibly encrypted) encoded using Base64.
+  # @param [Integer, nil] base64_bytes The length of the original content
+  #   before encoding to base64. This is used for the informational header.
+  def draw_paperback(qr_code:, sixword_lines:, sixword_bytes:, labels:,
+                     passphrase_sha: nil, passphrase_len: nil,
+                     sixword_font_size: nil, base64_content: nil,
+                     base64_bytes: nil)
     unless qr_code.is_a?(RQRCode::QRCode)
       raise ArgumentError.new('qr_code must be RQRCode::QRCode')
     end
@@ -53,7 +68,13 @@ module Paperback; class Document
     pdf.start_new_page
 
     draw_sixword(lines: sixword_lines, sixword_bytes: sixword_bytes,
-                 font_size: sixword_font_size)
+                 font_size: sixword_font_size,
+                 is_encrypted: passphrase_len)
+
+    if base64_content
+      draw_base64(b64_content: base64_content, b64_bytes: base64_bytes,
+                  is_encrypted: passphrase_len)
+    end
 
     pdf.number_pages('<page> of <total>', align: :right,
                      at: [pdf.bounds.right - 100, -2])
@@ -107,7 +128,7 @@ module Paperback; class Document
 
       pdf.move_down(8)
       pdf.indent(72) do
-        pdf.text('Be sure to cover the passphrase when scanning the QR code!' \
+        pdf.text('Be sure to cover the passphrase when scanning the QR code!' +
                  ' Decrypt with `gpg -d`.')
       end
     end
@@ -118,7 +139,7 @@ module Paperback; class Document
   # @param [Integer] hunks_per_row The number of 6-word sentences per line
   # @param [Integer] sixword_bytes Bytesize of the sixword encoded data
   def draw_sixword(lines:, sixword_bytes:, columns: 3, hunks_per_row: 1,
-                   font_size: nil)
+                   font_size: nil, is_encrypted: true)
     font_size ||= 11
 
     debug_draw_axes
@@ -129,8 +150,9 @@ module Paperback; class Document
 
     header = [
       "This sixword text encodes #{sixword_bytes} bytes in #{lines.length}",
-      " six-word sentences.",
-      " Decode with `sixword -d`, then `gpg -d`."
+      ' six-word sentences.',
+      ' Decode with `sixword -d`',
+      (is_encrypted ? ', then `gpg -d`.' : '.')
     ].join
 
     pdf.font('Times-Roman') do
@@ -176,5 +198,34 @@ module Paperback; class Document
         end
       end
     end
+  end
+
+  # @param [String] b64_content
+  def draw_base64(b64_content:, b64_bytes:, font_size: nil, is_encrypted: true)
+    font_size ||= 11
+
+    debug_draw_axes
+
+    if is_encrypted
+      header = [
+        "This PGP text encodes #{b64_bytes} bytes in #{b64_content.length}",
+        " characters. Decode with `gpg -d`."
+      ].join
+    else
+      header = [
+        "This base64 text encodes #{b64_bytes} bytes in #{b64_content.length}",
+        " characters. Decode with `base64 --decode`."
+      ].join
+    end
+
+    add_newline
+    add_newline
+    pdf.text(header)
+    add_newline
+
+    pdf.font('Courier') do
+      pdf.text(b64_content)
+    end
+
   end
 end; end
