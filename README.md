@@ -1,8 +1,6 @@
 # Paperback
 
 [![Gem Version](https://badge.fury.io/rb/paperback.svg)](https://rubygems.org/gems/paperback)
-[![Build status](https://travis-ci.org/ab/paperback.svg)](https://travis-ci.org/ab/paperback)
-[![Code Climate](https://codeclimate.com/github/ab/paperback.svg)](https://codeclimate.com/github/ab/paperback)
 [![Inline Docs](http://inch-ci.org/github/ab/paperback.svg?branch=master)](http://www.rubydoc.info/github/ab/paperback/master)
 
 *Paperback* is a library that facilitates the creation of paper offline backups
