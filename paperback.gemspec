@@ -27,11 +27,13 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'rake'
   spec.add_development_dependency 'rspec', '~> 3.0'
   spec.add_development_dependency 'rubocop', '~> 0.50'
+  spec.add_development_dependency 'sorbet', '~> 0.4'
   spec.add_development_dependency 'yard'
 
   spec.add_dependency('prawn', '~> 1.3')
   spec.add_dependency('rqrcode', '~> 0.10')
   spec.add_dependency('sixword', '~> 0.3')
+  spec.add_dependency('sorbet-runtime', '~> 0.4')
   spec.add_dependency('subprocess', '~> 1.3')
 
   spec.required_ruby_version = '>= 2.0'
