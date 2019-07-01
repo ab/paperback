@@ -1,8 +1,10 @@
-# typed: true
+# typed: strict
 # frozen_string_literal: true
 
 module Paperback
   module CLI
+    extend T::Sig
+
     # Top level CLI interface for Paperback. This is the one stop shop for
     # calling paperback.
     #
@@ -19,6 +21,20 @@ module Paperback
     #   [Paperback::Preparer#render]
     # @param [Boolean] include_base64 Whether to include a Base64 copy of the
     #   input
+    sig do
+      params(
+        input: String,
+        output: String,
+        encrypt: T::Boolean,
+        qr_base64: T::Boolean,
+        qr_level: Symbol,
+        comment: T.nilable(String),
+        passphrase_file: T.nilable(String),
+        extra_draw_opts: Hash,
+        include_base64: T::Boolean,
+      )
+        .void
+    end
     def self.create_backup(input:, output:, encrypt: true, qr_base64: true,
                            qr_level: :l, comment: nil, passphrase_file: nil,
                            extra_draw_opts: {}, include_base64: true)
