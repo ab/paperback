@@ -5,7 +5,7 @@ require 'prawn'
 
 # Main class for creating and rendering PDFs
 module Paperback; class Document
-
+  extend T::Sig
 
   sig {returns(Prawn::Document)}
   attr_reader :pdf
@@ -28,18 +28,8 @@ module Paperback; class Document
 
   sig do
     params(
-      output_file: IO,
-      draw_opts: {
-        qr_code: RQRCode::QRCode,
-        sixword_lines: T::Array[String],
-        sixword_bytes: Integer,
-        labels: T::Hash[String, String],
-        passphrase_sha: T.nilable(String),
-        passphrase_len: T.nilable(Integer),
-        sixword_font_size: T.nilable(Float),
-        base64_content: T.nilable(String),
-        base64_bytes: T.nilable(Integer),
-      },
+      output_file: String,
+      draw_opts: T::Hash[Symbol, T.untyped],
     )
       .void
   end
@@ -74,7 +64,7 @@ module Paperback; class Document
       qr_code: RQRCode::QRCode,
       sixword_lines: T::Array[String],
       sixword_bytes: Integer,
-      labels: T::Hash[String, String],
+      labels: T::Hash[String, T.untyped],
       passphrase_sha: T.nilable(String),
       passphrase_len: T.nilable(Integer),
       sixword_font_size: T.nilable(Float),
@@ -136,7 +126,7 @@ module Paperback; class Document
 
   sig do
     params(
-      labels: T::Hash[String, String],
+      labels: T::Hash[String, T.untyped],
       passphrase_sha: T.nilable(String),
       passphrase_len: T.nilable(Integer),
       repo_url: String,

@@ -21,6 +21,9 @@ Metrics/MethodLength:
 Metrics/ModuleLength:
   Enabled: false
 
+Metrics/ParameterLists:
+  Enabled: false
+
 # Configuration parameters: Exclude.
 #
 # We could re-enable this if it understood that the top level module should
@@ -35,6 +38,11 @@ Style/Documentation:
 # ********************************
 # Disagree with these style points
 # ********************************
+
+Layout/EmptyLineBetweenDefs:
+  Enabled: false
+Layout/EmptyLineAfterGuardClause:
+  Enabled: false
 
 Style/DotPosition:
   Enabled: false
@@ -57,12 +65,16 @@ Style/IfUnlessModifier:
 Style/WhileUntilModifier:
   Enabled: false
 
+# Don't favor wacky unless methods
+Style/NegatedIf:
+  Enabled: false
+Style/InverseMethods:
+  Enabled: false
+
 Style/InfiniteLoop:
   Enabled: false
 Style/PercentLiteralDelimiters:
-  PreferredDelimiters:
-    '%w': '{}'
-    '%W': '{}'
+  Enabled: false
 Style/RaiseArgs:
   EnforcedStyle: compact
 Style/RedundantReturn:
@@ -84,14 +96,13 @@ Style/SpaceInsideBlockBraces:
 Style/SpaceInsideHashLiteralBraces:
   Enabled: false
 
-# Offense count: 27
-# Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyleForMultiline, SupportedStyles.
-Style/TrailingCommaInLiteral:
-  # SupportedStyles:
-  #   - comma
-  #   - no_comma
+Style/TrailingCommaInArrayLiteral:
   EnforcedStyleForMultiline: comma
+Style/TrailingCommaInHashLiteral:
+  EnforcedStyleForMultiline: comma
+Style/TrailingCommaInArguments:
+  Enabled: false
 
 # Don't favor %w for arrays of words.
 Style/WordArray:
@@ -99,6 +110,9 @@ Style/WordArray:
 
 # Don't favor %i for arrays of symbols.
 Style/SymbolArray:
+  Enabled: false
+
+Style/NumericLiteralPrefix:
   Enabled: false
 
 # Definitely do NOT assign variables within a conditional. Christ.
