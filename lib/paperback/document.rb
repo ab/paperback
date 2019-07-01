@@ -1,27 +1,53 @@
-# typed: true
+# typed: strict
 # frozen_string_literal: true
 
 require 'prawn'
 
 # Main class for creating and rendering PDFs
 module Paperback; class Document
-  attr_reader :pdf, :debug
 
+
+  sig {returns(Prawn::Document)}
+  attr_reader :pdf
+
+  sig {returns(T::Boolean)}
+  attr_reader :debug
+
+  sig {params(debug: T::Boolean).void}
   def initialize(debug: false)
     log.debug('Document#initialize')
-    @debug = debug
-    @pdf = Prawn::Document.new
+    @debug = T.let(debug, T::Boolean)
+    @pdf = T.let(Prawn::Document.new, Prawn::Document)
+    @log = T.let(nil, T.nilable(Logger))
   end
 
+  sig {returns(Logger)}
   def log
     @log ||= Paperback.class_log(self.class)
   end
 
+  sig do
+    params(
+      output_file: IO,
+      draw_opts: {
+        qr_code: RQRCode::QRCode,
+        sixword_lines: T::Array[String],
+        sixword_bytes: Integer,
+        labels: T::Hash[String, String],
+        passphrase_sha: T.nilable(String),
+        passphrase_len: T.nilable(Integer),
+        sixword_font_size: T.nilable(Float),
+        base64_content: T.nilable(String),
+        base64_bytes: T.nilable(Integer),
+      },
+    )
+      .void
+  end
   def render(output_file:, draw_opts:)
     log.info('Rendering PDF')
 
     # Create all the PDF content
-    draw_paperback(**draw_opts)
+    draw_paperback(**T.unsafe(draw_opts))
 
     # Render to output file
     log.info("Writing PDF to #{output_file.inspect}")
@@ -43,13 +69,25 @@ module Paperback; class Document
   #   content (possibly encrypted) encoded using Base64.
   # @param [Integer, nil] base64_bytes The length of the original content
   #   before encoding to base64. This is used for the informational header.
+  sig do
+    params(
+      qr_code: RQRCode::QRCode,
+      sixword_lines: T::Array[String],
+      sixword_bytes: Integer,
+      labels: T::Hash[String, String],
+      passphrase_sha: T.nilable(String),
+      passphrase_len: T.nilable(Integer),
+      sixword_font_size: T.nilable(Float),
+      base64_content: T.nilable(String),
+      base64_bytes: T.nilable(Integer),
+    )
+      .void
+  end
   def draw_paperback(qr_code:, sixword_lines:, sixword_bytes:, labels:,
                      passphrase_sha: nil, passphrase_len: nil,
                      sixword_font_size: nil, base64_content: nil,
                      base64_bytes: nil)
-    unless qr_code.is_a?(RQRCode::QRCode)
-      raise ArgumentError.new('qr_code must be RQRCode::QRCode')
-    end
+    T.assert_type!(qr_code, RQRCode::QRCode)
 
     # Header & QR code page
     pdf.font('Times-Roman')
@@ -72,11 +110,11 @@ module Paperback; class Document
 
     draw_sixword(lines: sixword_lines, sixword_bytes: sixword_bytes,
                  font_size: sixword_font_size,
-                 is_encrypted: passphrase_len)
+                 is_encrypted: !!passphrase_len)
 
     if base64_content
-      draw_base64(b64_content: base64_content, b64_bytes: base64_bytes,
-                  is_encrypted: passphrase_len)
+      draw_base64(b64_content: base64_content, b64_bytes: T.must(base64_bytes),
+                  is_encrypted: !!passphrase_len)
     end
 
     pdf.number_pages('<page> of <total>', align: :right,
@@ -84,16 +122,27 @@ module Paperback; class Document
   end
 
   # If in debug mode, draw axes on the page to assist with layout
+  sig {void}
   def debug_draw_axes
     return unless debug
     pdf.float { pdf.stroke_axis }
   end
 
   # Move cursor down by one line
+  sig {void}
   def add_newline
     pdf.move_down(pdf.font_size)
   end
 
+  sig do
+    params(
+      labels: T::Hash[String, String],
+      passphrase_sha: T.nilable(String),
+      passphrase_len: T.nilable(Integer),
+      repo_url: String,
+    )
+      .void
+  end
   def draw_header(labels:, passphrase_sha:, passphrase_len:,
                   repo_url: 'https://github.com/ab/paperback')
 
@@ -104,7 +153,7 @@ module Paperback; class Document
     pdf.text(intro, inline_format: true)
     add_newline
 
-    label_pad = labels.keys.map(&:length).max + 1
+    label_pad = T.must(labels.keys.map(&:length).max) + 1
 
     unless passphrase_sha && passphrase_len
       labels['Encrypted'] = 'no'
@@ -141,6 +190,16 @@ module Paperback; class Document
   # @param [Integer] columns The number of text columns on the page
   # @param [Integer] hunks_per_row The number of 6-word sentences per line
   # @param [Integer] sixword_bytes Bytesize of the sixword encoded data
+  sig do
+    params(
+      lines: T::Array[String],
+      sixword_bytes: Integer,
+      columns: Integer,
+      hunks_per_row: Integer,
+      font_size: T.nilable(Float),
+      is_encrypted: T::Boolean,
+    ).void
+  end
   def draw_sixword(lines:, sixword_bytes:, columns: 3, hunks_per_row: 1,
                    font_size: nil, is_encrypted: true)
     font_size ||= 11
@@ -172,6 +231,11 @@ module Paperback; class Document
     end
   end
 
+  sig do
+    params(
+      qr_modules: T::Array[T::Array[T::Boolean]],
+    ).void
+  end
   def draw_qr_code(qr_modules:)
     qr_height = pdf.cursor # entire rest of page
     qr_width = pdf.bounds.width # entire page width
@@ -204,6 +268,14 @@ module Paperback; class Document
   end
 
   # @param [String] b64_content
+  sig do
+    params(
+      b64_content: String,
+      b64_bytes: Integer,
+      font_size: T.nilable(Float),
+      is_encrypted: T::Boolean,
+    ).void
+  end
   def draw_base64(b64_content:, b64_bytes:, font_size: nil, is_encrypted: true)
     font_size ||= 11
 
