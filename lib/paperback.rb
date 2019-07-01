@@ -1,8 +1,14 @@
-# typed: true
+# typed: strict
 require 'logger'
+require 'sorbet-runtime'
 
 # Paperback is a library for creating paper backups of sensitive data.
 module Paperback
+  extend T::Sig
+
+  @log = T.let(nil, T.nilable(Logger))
+
+  sig {returns(Logger)}
   def self.log
     return @log if @log
     @log = Logger.new(STDERR)
@@ -11,6 +17,7 @@ module Paperback
     @log
   end
 
+  sig {params(klass: Class, stream: IO).returns(Logger)}
   def self.class_log(klass, stream=STDERR)
     log = Logger.new(stream)
     log.progname = klass.name
@@ -18,10 +25,14 @@ module Paperback
     log
   end
 
+  @log_level = T.let(nil, T.nilable(Integer))
+
+  sig {returns(Integer)}
   def self.log_level
     @log_level ||= Logger::INFO
   end
 
+  sig {params(val: Integer).returns(Integer)}
   def self.log_level=(val)
     @log_level = val
   end
