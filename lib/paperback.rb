@@ -1,3 +1,4 @@
+# typed: true
 require 'logger'
 
 # Paperback is a library for creating paper backups of sensitive data.

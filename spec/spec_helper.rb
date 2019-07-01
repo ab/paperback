@@ -1,3 +1,4 @@
+# typed: strict
 require_relative '../lib/paperback'
 
 # Given that it is always loaded, you are encouraged to keep this file as
