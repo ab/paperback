@@ -30,7 +30,7 @@ module Paperback
         qr_level: Symbol,
         comment: T.nilable(String),
         passphrase_file: T.nilable(String),
-        extra_draw_opts: Hash,
+        extra_draw_opts: T::Hash[T.untyped, T.untyped],
         include_base64: T::Boolean,
       )
         .void

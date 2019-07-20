@@ -98,7 +98,7 @@ module Paperback
       @log ||= Paperback.class_log(self)
     end
 
-    sig {params(output_filename: String, extra_draw_opts: Hash).void}
+    sig {params(output_filename: String, extra_draw_opts: T::Hash[T.untyped, T.untyped]).void}
     def render(output_filename:, extra_draw_opts: {})
       log.debug('Preparer#render')
 
