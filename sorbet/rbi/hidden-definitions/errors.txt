@@ -244,14 +244,11 @@
 # wrong constant name div$2
 # wrong constant name power$2
 # wrong constant name to_s$1
-# wrong constant name _load
-# wrong constant name double_fig
-# wrong constant name limit
-# wrong constant name mode
+# undefined singleton method `limit$1' for `BigDecimal'
+# undefined singleton method `mode$1' for `BigDecimal'
+# wrong constant name limit$1
+# wrong constant name mode$1
 # wrong constant name new
-# wrong constant name save_exception_mode
-# wrong constant name save_limit
-# wrong constant name save_rounding_mode
 # wrong constant name clone
 # wrong constant name irb
 # wrong constant name local_variable_defined?
@@ -409,6 +406,7 @@
 # wrong constant name run
 # wrong constant name <static-init>
 # wrong constant name <static-init>
+# uninitialized constant Bundler::Index::Elem
 # wrong constant name initialize
 # wrong constant name inject
 # wrong constant name remove
@@ -424,6 +422,8 @@
 # wrong constant name ambiguous_gems
 # wrong constant name ambiguous_gems=
 # wrong constant name install
+# uninitialized constant Bundler::Molinillo::DependencyGraph::Elem
+# uninitialized constant Bundler::Molinillo::DependencyGraph::Log::Elem
 # wrong constant name ==
 # wrong constant name app_cache_dirname
 # wrong constant name app_cache_path
@@ -514,7 +514,6 @@
 # wrong constant name default_attempts
 # wrong constant name default_retries
 # uninitialized constant Bundler::RubyGemsGemInstaller::ENV_PATHS
-# wrong constant name initialize
 # wrong constant name <static-init>
 # wrong constant name ==
 # wrong constant name fallback_timeout
@@ -540,6 +539,7 @@
 # wrong constant name <static-init>
 # wrong constant name <static-init>
 # wrong constant name validate!
+# uninitialized constant Bundler::SpecSet::Elem
 # wrong constant name add_color
 # wrong constant name ask
 # wrong constant name confirm
@@ -865,7 +865,6 @@
 # wrong constant name first$2
 # wrong constant name grep_v
 # wrong constant name inject$2
-# wrong constant name lazy
 # wrong constant name max$2
 # wrong constant name max_by$2
 # wrong constant name min$2
@@ -1004,6 +1003,7 @@
 # wrong constant name open!
 # wrong constant name realdirpath$1
 # wrong constant name realpath$1
+# wrong constant name relative_path
 # wrong constant name umask$1
 # wrong constant name utime$1
 # wrong constant name blockdev?
@@ -2979,7 +2979,6 @@
 # undefined method `default$2' for class `Hash'
 # undefined method `fetch$2' for class `Hash'
 # undefined method `initialize$2' for class `Hash'
-# undefined method `merge$2' for class `Hash'
 # wrong constant name <
 # wrong constant name <=
 # wrong constant name >
@@ -2996,7 +2995,6 @@
 # wrong constant name flatten
 # wrong constant name index
 # wrong constant name initialize$2
-# wrong constant name merge$2
 # wrong constant name merge!
 # wrong constant name replace
 # wrong constant name slice
@@ -3151,78 +3149,8 @@
 # wrong constant name to_bn
 # wrong constant name to_s$1
 # wrong constant name sqrt
-# wrong constant name <Class:Generator>
-# wrong constant name <Class:Parser>
-# wrong constant name <Class:GeneratorMethods>
-# wrong constant name <Class:State>
-# wrong constant name <Class:Array>
-# wrong constant name <Class:FalseClass>
-# wrong constant name <Class:Float>
-# wrong constant name <Class:Hash>
-# wrong constant name <Class:Integer>
-# wrong constant name <Class:NilClass>
-# wrong constant name <Class:Object>
-# wrong constant name <Class:String>
-# wrong constant name <Class:TrueClass>
-# wrong constant name to_json
-# wrong constant name <static-init>
-# wrong constant name to_json
-# wrong constant name <static-init>
-# wrong constant name to_json
-# wrong constant name <static-init>
-# wrong constant name to_json
-# wrong constant name <static-init>
-# wrong constant name to_json
-# wrong constant name <static-init>
-# wrong constant name to_json
-# wrong constant name <static-init>
-# wrong constant name to_json
-# wrong constant name <static-init>
-# wrong constant name <Class:Extend>
-# wrong constant name to_json
-# wrong constant name to_json_raw
-# wrong constant name to_json_raw_object
-# wrong constant name json_create
-# wrong constant name <static-init>
-# wrong constant name <static-init>
-# wrong constant name to_json
-# wrong constant name <static-init>
-# wrong constant name <static-init>
-# wrong constant name []
-# wrong constant name []=
-# wrong constant name allow_nan?
-# wrong constant name array_nl
-# wrong constant name array_nl=
-# wrong constant name ascii_only?
-# wrong constant name buffer_initial_length
-# wrong constant name buffer_initial_length=
-# wrong constant name check_circular?
-# wrong constant name configure
-# wrong constant name depth
-# wrong constant name depth=
-# wrong constant name generate
-# wrong constant name indent
-# wrong constant name indent=
-# wrong constant name initialize
-# wrong constant name max_nesting
-# wrong constant name max_nesting=
-# wrong constant name merge
-# wrong constant name object_nl
-# wrong constant name object_nl=
-# wrong constant name space
-# wrong constant name space=
-# wrong constant name space_before
-# wrong constant name space_before=
-# wrong constant name to_h
-# wrong constant name to_hash
-# wrong constant name <static-init>
 # wrong constant name from_state
-# wrong constant name <static-init>
 # wrong constant name initialize
-# wrong constant name parse
-# wrong constant name source
-# wrong constant name <static-init>
-# wrong constant name <static-init>
 # undefined singleton method `dump$1' for `JSON'
 # undefined singleton method `generate$1' for `JSON'
 # undefined singleton method `pretty_generate$1' for `JSON'
@@ -3299,7 +3227,7 @@
 # wrong constant name receiver
 # wrong constant name super_method
 # wrong constant name unbind
-# undefined method `class_eval$1' for class `Module'
+# undefined method `class_eval$2' for class `Module'
 # undefined method `class_variables$1' for class `Module'
 # undefined method `const_defined?$1' for class `Module'
 # undefined method `const_get$1' for class `Module'
@@ -3307,7 +3235,7 @@
 # undefined method `define_method$2' for class `Module'
 # undefined method `instance_methods$1' for class `Module'
 # undefined method `method_defined?$1' for class `Module'
-# undefined method `module_eval$1' for class `Module'
+# undefined method `module_eval$2' for class `Module'
 # undefined method `private_instance_methods$1' for class `Module'
 # undefined method `private_method_defined?$1' for class `Module'
 # undefined method `protected_instance_methods$1' for class `Module'
@@ -3315,7 +3243,7 @@
 # undefined method `public_instance_methods$1' for class `Module'
 # undefined method `public_method_defined?$1' for class `Module'
 # undefined method `remove_method$1' for class `Module'
-# wrong constant name class_eval$1
+# wrong constant name class_eval$2
 # wrong constant name class_variables$1
 # wrong constant name const_defined?$1
 # wrong constant name const_get$1
@@ -3324,7 +3252,7 @@
 # wrong constant name deprecate_constant
 # wrong constant name instance_methods$1
 # wrong constant name method_defined?$1
-# wrong constant name module_eval$1
+# wrong constant name module_eval$2
 # wrong constant name private_instance_methods$1
 # wrong constant name private_method_defined?$1
 # wrong constant name protected_instance_methods$1
@@ -3771,7 +3699,6 @@
 # wrong constant name <<
 # wrong constant name ===
 # wrong constant name >>
-# wrong constant name []
 # wrong constant name clone
 # wrong constant name curry$1
 # wrong constant name lambda?
@@ -4103,7 +4030,7 @@
 # wrong constant name <static-init>
 # wrong constant name worse_than?
 # wrong constant name +
-# uninitialized constant #<Class:0x000055cda44af020>::Elem
+# uninitialized constant #<Class:0x000055ef03c354e0>::Elem
 # wrong constant name candidate?
 # wrong constant name ideal?
 # wrong constant name indeterminate_actual_indexes
@@ -6013,9 +5940,10 @@
 # wrong constant name <static-init>
 # wrong constant name cyan
 # wrong constant name emojify
+# wrong constant name init
 # wrong constant name main
 # wrong constant name make_step
-# wrong constant name parse_command
+# wrong constant name usage
 # wrong constant name yellow
 # wrong constant name <static-init>
 # wrong constant name real_ancestors
@@ -6073,6 +6001,7 @@
 # wrong constant name main
 # wrong constant name output_file
 # wrong constant name <static-init>
+# wrong constant name <static-init>
 # uninitialized constant SortedSet::InspectKey
 # wrong constant name initialize
 # wrong constant name setup
@@ -6098,6 +6027,7 @@
 # undefined method `lines$1' for class `String'
 # undefined method `ljust$1' for class `String'
 # undefined method `match$2' for class `String'
+# undefined method `match?$2' for class `String'
 # undefined method `prepend$1' for class `String'
 # undefined method `rindex$1' for class `String'
 # undefined method `rjust$1' for class `String'
@@ -6150,7 +6080,7 @@
 # wrong constant name lines$1
 # wrong constant name ljust$1
 # wrong constant name match$2
-# wrong constant name match?
+# wrong constant name match?$2
 # wrong constant name prepend$1
 # wrong constant name reverse!
 # wrong constant name rindex$1

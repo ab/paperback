@@ -99,7 +99,7 @@ class File < IO
   def self.cleanpath(path, rel_root = nil); end
   def self.empty?(arg0); end
   def self.read_binary(file); end
-  def self.relative_path(from, to); end
+  def self.split(arg0); end
 end
 class SymbolHash < Hash
   def [](key); end
