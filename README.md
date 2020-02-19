@@ -1,4 +1,4 @@
-# Paperback
+ # Paperback
 
 [![Gem Version](https://badge.fury.io/rb/paperback.svg)](https://rubygems.org/gems/paperback)
 [![Inline Docs](http://inch-ci.org/github/ab/paperback.svg?branch=master)](http://www.rubydoc.info/github/ab/paperback/master)
@@ -42,6 +42,8 @@ paperback data.key out.pdf
 
 See [sample directory](./sample)
 
+![sample page one](./sample/sample.pg1.png)
+![sample page two](./sample/sample.pg2.png)
 
 ### More complex patterns
 
