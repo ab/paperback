@@ -142,3 +142,6 @@ Style/GlobalVars:
 Style/SpecialGlobalVars:
   Exclude:
     - 'paperback.gemspec'
+
+Naming/HeredocDelimiterNaming:
+  Enabled: false
