@@ -1,8 +1,6 @@
-# coding: utf-8
+# frozen_string_literal: true
 
-lib = File.expand_path('../lib', __FILE__)
-$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'paperback/version'
+require_relative 'lib/paperback/version'
 
 Gem::Specification.new do |spec|
   spec.name          = 'paperback'
@@ -24,19 +22,20 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ['lib']
 
-  spec.add_development_dependency 'bundler', '~> 1.3'
+  spec.add_development_dependency 'bundler', '~> 2.0'
   spec.add_development_dependency 'pry'
   spec.add_development_dependency 'rake'
   spec.add_development_dependency 'rspec', '~> 3.0'
   spec.add_development_dependency 'rubocop', '~> 0.50'
-  spec.add_development_dependency 'sorbet', '~> 0.4'
+  spec.add_development_dependency 'sorbet', '~> 0.5'
+  spec.add_development_dependency 'tapioca', '~> 0.10'
   spec.add_development_dependency 'yard'
 
   spec.add_dependency('prawn', '~> 1.3')
   spec.add_dependency('rqrcode', '~> 0.10')
   spec.add_dependency('sixword', '~> 0.3')
-  spec.add_dependency('sorbet-runtime', '~> 0.4')
+  spec.add_dependency('sorbet-runtime', '~> 0.5')
   spec.add_dependency('subprocess', '~> 1.3')
 
-  spec.required_ruby_version = '>= 2.0'
+  spec.required_ruby_version = '>= 2.7'
 end
