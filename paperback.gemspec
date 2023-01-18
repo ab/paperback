@@ -25,7 +25,8 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'rake'
   spec.add_development_dependency 'rspec', '~> 3.0'
   spec.add_development_dependency 'rubocop', '~> 0.50'
-  spec.add_development_dependency 'sorbet', '~> 0.4'
+  spec.add_development_dependency 'sorbet', '~> 0.5'
+  spec.add_development_dependency 'tapioca', '~> 0.10'
   spec.add_development_dependency 'yard'
 
   spec.add_dependency('prawn', '~> 1.3')
