@@ -4,6 +4,13 @@ This project adheres to [Semantic Versioning](http://semver.org).
 
 ## [Unreleased]
 
+## [0.0.5] -- 2023-01-17
+
+- Upgrade to modern versions of ruby
+- Upgrade a few dependencies, fix type checking
+- Fix tests to work on newer versions of pdftotext
+- Run tests on Github Actions
+
 ## [0.0.4] -- 2019-02-26
 
 - Add some basic end-to-end tests.
