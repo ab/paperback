@@ -10,10 +10,40 @@ require 'subprocess'
 RSpec.describe Paperback::CLI do
   Executable = File.dirname(__FILE__) + '/../../bin/paperback'
 
+  SupportedPopplerVersions = [
+    /\A0\.86\..*\z/,
+    /\A22\.02\..*\z/,
+  ]
+
+  def get_pdftotext_version
+    output = Subprocess.check_output(
+      ['pdftotext', '-v'], stderr: Subprocess::STDOUT
+    )
+    first_line = output.lines(chomp: true)[0]
+    if first_line.nil?
+      raise Exception('Unexpected version line from pdftotext: ' + output.inspect)
+    end
+
+    parts = first_line.split(' ')
+    if parts[0] != 'pdftotext' || parts[1] != 'version'
+      raise Exception('Bad version line from pdftotext: ' + first_line.inspect)
+    end
+
+    return parts[2..].join(' ')
+  end
+
   # pdftotext from poppler is a test dependency
   it 'finds system pdftotext installed (test dependency)' do
     expect(Subprocess.check_output(%w[which pdftotext])
           ).to match(/pdftotext/)
+
+    version = get_pdftotext_version
+
+    expect(version).to match(/\A\d+\..*/)
+
+    unless SupportedPopplerVersions.any? {|regex| regex.match(version) }
+      Paperback.log.warn("#{File.basename(__FILE__)}: Unsupported poppler-utils pdftotext version #{version}, tests may fail!")
+    end
   end
 
   describe 'end-to-end test:' do
@@ -41,25 +71,19 @@ RSpec.describe Paperback::CLI do
 
       expected = <<-EOM
 This is a paper backup produced by `paperback`. https://github.com/ab/paperback
-Filename:
-Backed up:
-Mtime:
-Bytes:
-Comment:
-SHA256:
-Encrypted:
 
-fox.txt
-#{timestamp}
-#{timestamp}
-45
-Some comment
-b47cc0f104b62d4c7c30bcd68fd8e67613e287dc4ad8c310ef10cbadea9c4380
-no
+Filename:      fox.txt
+Backed up:     #{timestamp}
+Mtime:         #{timestamp}
+Bytes:         45
+Comment:       Some comment
+SHA256:        b47cc0f104b62d4c7c30bcd68fd8e67613e287dc4ad8c310ef10cbadea9c4380
+Encrypted:     no
 
-1 of 2
 
+ 1 of 2
 \fThis sixword text encodes 45 bytes in 6 six-word sentences. Decode with `sixword -d`.
+
 1: beak us ache sour bern lola
 2: core arc hulk slid drew due
 3: chub ends bog russ bess mast
@@ -67,16 +91,18 @@ no
 5: coat mod hit need knew grim
 6: cave ella raft fir a act3
 
+
 This base64 text encodes 45 bytes in 61 characters. Decode with `base64 --decode`.
+
 VGhlIHF1aWNrIGJyb3duIGZveCBqdW1wcyBvdmVyIHRoZSBsYXp5IGRvZy4K
 
-2 of 2
 
+ 2 of 2
 \f
       EOM
 
-      # strip trailing newline
-      expected = expected[0...-1]
+      # strip trailing newline and extra runs of spaces or newlines
+      expected = expected[0...-1].gsub(/  +/, ' ').gsub(/\n\n+/, "\n")
 
       # create the backup file!
       Paperback::CLI.create_backup(
@@ -89,14 +115,16 @@ VGhlIHF1aWNrIGJyb3duIGZveCBqdW1wcyBvdmVyIHRoZSBsYXp5IGRvZy4K
       expect(File.read('fox.pdf', 20)).to start_with("%PDF-1.3\n")
 
       # convert to text to see what's in it
-      Subprocess.check_call(%w[pdftotext fox.pdf fox.pdftotext.txt])
+      Subprocess.check_call(%w[pdftotext -layout fox.pdf fox.pdftotext.txt])
 
       expect(File.size('fox.pdftotext.txt')).to be > 100
 
-      # This test is likely to break given even minor changes to paperback, so it
-      # may not be particularly useful. However, it's nice to at least have some
-      # kind of end-to-end test.
-      expect(File.read('fox.pdftotext.txt')).to eq(expected)
+      # This test is likely to break given even minor changes to paperback or
+      # pdftotext, so it may not be particularly useful. However, it's nice to
+      # at least have some kind of end-to-end test.
+      converted_text = File.read('fox.pdftotext.txt')
+      converted_text_stripped = converted_text.gsub(/  +/, ' ').gsub(/\n\n+/, "\n")
+      expect(converted_text_stripped).to eq(expected)
     end
 
     it 'backs up encrypted content correctly' do
