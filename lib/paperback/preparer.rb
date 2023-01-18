@@ -118,8 +118,11 @@ module Paperback
         opts[:passphrase_sha] = self.class.truncated_sha256(passphrase)
         opts[:passphrase_len] = passphrase.length
         if passphrase_file
-          File.open(passphrase_file, File::CREAT | File::EXCL | File::WRONLY,
-                    0400) do |f|
+          File.open(
+            T.must(passphrase_file),
+            File::CREAT | File::EXCL | File::WRONLY,
+            0o400
+          ) do |f|
             f.write(passphrase)
           end
           log.info("Wrote passphrase to #{passphrase_file.inspect}")
