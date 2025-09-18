@@ -1,4 +1,6 @@
+# frozen_string_literal: true
 # typed: strict
+
 require 'logger'
 require 'sorbet-runtime'
 
@@ -17,7 +19,7 @@ module Paperback
     @log
   end
 
-  sig {params(klass: Class, stream: IO).returns(Logger)}
+  sig {params(klass: T::Class[T.anything], stream: IO).returns(Logger)}
   def self.class_log(klass, stream=STDERR)
     log = Logger.new(stream)
     log.progname = klass.name

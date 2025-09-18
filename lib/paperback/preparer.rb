@@ -169,7 +169,7 @@ module Paperback
     # Compute a truncated SHA256 digest
     sig {params(content: String).returns(String)}
     def self.truncated_sha256(content)
-      Digest::SHA256.hexdigest(content)[0...16]
+      T.must(Digest::SHA256.hexdigest(content)[0...16])
     end
 
     sig {params(filename: String, password: String).returns(String)}
