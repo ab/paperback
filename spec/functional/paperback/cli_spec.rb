@@ -13,6 +13,7 @@ RSpec.describe Paperback::CLI do
   SupportedPopplerVersions = [
     /\A0\.86\..*\z/,
     /\A22\.02\..*\z/,
+    /\A24\..*\z/,
   ]
 
   def get_pdftotext_version
