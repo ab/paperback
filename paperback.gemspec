@@ -31,11 +31,12 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'tapioca', '~> 0.10'
   spec.add_development_dependency 'yard'
 
-  spec.add_dependency('prawn', '~> 1.3')
-  spec.add_dependency('rqrcode', '~> 0.10')
+  spec.add_dependency('base64')
+  spec.add_dependency('prawn', '~> 2.5')
+  spec.add_dependency('rqrcode', '~> 3.1')
   spec.add_dependency('sixword', '~> 0.3')
   spec.add_dependency('sorbet-runtime', '~> 0.5')
   spec.add_dependency('subprocess', '~> 1.3')
 
-  spec.required_ruby_version = '>= 2.7'
+  spec.required_ruby_version = '>= 3.0'
 end

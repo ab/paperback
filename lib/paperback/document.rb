@@ -1,7 +1,11 @@
 # typed: strict
 # frozen_string_literal: true
 
+# Temporarily disable $VERBOSE due to prawn warning
+# https://github.com/prawnpdf/prawn/issues/1349
+$VERBOSE = false
 require 'prawn'
+$VERBOSE = true
 
 # Main class for creating and rendering PDFs
 module Paperback; class Document
