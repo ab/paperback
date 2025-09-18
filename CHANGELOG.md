@@ -4,6 +4,12 @@ This project adheres to [Semantic Versioning](http://semver.org).
 
 ## [Unreleased]
 
+## [0.0.6] -- 2025-09-17
+
+- Require ruby version >= 3.0
+- Add base64 dependency to fix compatibility with newest ruby versions.
+- Update dependencies.
+
 ## [0.0.5] -- 2023-01-17
 
 - Upgrade to modern versions of ruby
